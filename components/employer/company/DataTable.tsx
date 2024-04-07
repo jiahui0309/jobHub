@@ -31,6 +31,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import CompanyDeleteModal from './CompanyDeleteModal';
+import CompanyInfoModal from './CompanyInfoModal';
+
 
 
 interface DataTableProps<TData, TValue> {
@@ -164,6 +166,8 @@ export function DataTable<TData, TValue>({
                 {table.getFilteredRowModel().rows.length} row(s) selected.
             </div>
             <CompanyDeleteModal />
+            <CompanyInfoModal />
+
         </>
     );
 }

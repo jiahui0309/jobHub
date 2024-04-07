@@ -3,18 +3,20 @@ import { ArrowUpDown } from 'lucide-react';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import { Company } from '@/types/company';
+
 
 import CellAction from './CellAction';
 
-export type CompanyColumn = {
-    id: string;
-    name: string;
-    industry: string;
-    address: string;
-    city: string;
-};
+// export type CompanyColumn = {
+//     id: string;
+//     name: string;
+//     industry: string;
+//     address: string;
+//     city: string;
+// };
 
-export const columns: ColumnDef<CompanyColumn>[] = [
+export const columns: ColumnDef<Company>[] = [
     {
         id: 'select',
         header: ({ table }) => (

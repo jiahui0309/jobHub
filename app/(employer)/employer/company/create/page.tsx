@@ -9,7 +9,6 @@ const EmployerCompanyCreatePage = () => {
     return (
         <div className='p-5'>
             <Breadcrumb name='Company' />
-            <Heading title='Create company' description='Create a new company' />
             <CompanyForm />
         </div>
     );

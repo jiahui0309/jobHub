@@ -4,7 +4,7 @@ import prisma from '@/libs/prismadb';
 export const POST = async (request: Request) => {
     try {
         const body = await request.json();
-        console.log(body);
+
         const {
             name,
             industry,
@@ -33,7 +33,7 @@ export const POST = async (request: Request) => {
                 status: 400,
             });
         }
-        prisma.company;
+
         const company = await prisma.company.create({
             data: {
                 name,

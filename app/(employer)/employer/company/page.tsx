@@ -18,13 +18,13 @@ const EmployerCompanyPage = () => {
     // }
     const { data: companies, isLoading, error } = useGetAllCompanies();
 
-    const convertedCompanies = companies?.map((com: ICompany) => ({
-        id: com.id,
-        name: com.name,
-        industry: com.industry,
-        address: com.address,
-        city: com.city,
-    }));
+    // const convertedCompanies = companies?.map((com: ICompany) => ({
+    //     id: com.id,
+    //     name: com.name,
+    //     industry: com.industry,
+    //     address: com.address,
+    //     city: com.city,
+    // }));
 
 
     if (error) {
@@ -48,7 +48,7 @@ const EmployerCompanyPage = () => {
                 <Loading />
             ) : (
                 <div className='mx-auto pt-6'>
-                    <DataTable columns={columns} data={convertedCompanies} />
+                    <DataTable columns={columns} data={companies} />
                 </div>
                 )}
         </div>
