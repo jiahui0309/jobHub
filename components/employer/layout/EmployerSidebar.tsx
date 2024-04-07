@@ -31,7 +31,7 @@ const EmployerSidebar = ({
         {
             href: `/employer/company`,
             label: 'Companies',
-            active: pathname === `/employer/company`,
+            active: pathname.includes(`/employer/company`),
             icon: <HiOutlineLibrary className='h-6 w-6' />,
         },
         {
