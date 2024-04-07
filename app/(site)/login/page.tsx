@@ -1,17 +1,27 @@
 'use client';
 
-import { ChangeEvent, SyntheticEvent, useState } from 'react';
+import { ChangeEvent, SyntheticEvent, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import Loading from '@/components/Loading';
+import {useRouter} from "next/navigation";
 
 const LoginPage = () => {
+  const session = useSession();
+  const router = useRouter();
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (session?.status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
