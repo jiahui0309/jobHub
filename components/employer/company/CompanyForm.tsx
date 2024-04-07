@@ -19,6 +19,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useCreateCompanyMutation } from '@/hooks/useCompanyHooks';
+import { useRouter } from 'next/navigation';
+import User from "@/components/User";
 
 const formSchema = z.object({
     name: z.string().min(1, {
@@ -30,7 +36,8 @@ const formSchema = z.object({
     capacity: z.string().min(1, {
         message: 'Capacity is required.',
     }),
-    description: z.string(),
+    url: z.string(),
+    desc: z.string(),
     address: z.string().min(1, {
         message: 'Address is required.',
     }),
@@ -46,6 +53,19 @@ const formSchema = z.object({
 });
 
 const CompanyForm = () => {
+    const {data} = useSession();
+
+    console.log(JSON.stringify(data));
+
+
+    const router = useRouter();
+
+    const {
+        mutateAsync: createComapny,
+        isLoading,
+        error,
+    } = useCreateCompanyMutation();
+
     const [file, setFile] = useState<File>();
     const [logoUrl, setLogoUrl] = useState<string>();
 
@@ -80,7 +100,8 @@ const CompanyForm = () => {
             name: '',
             industry: '',
             capacity: '',
-            description: '',
+            url: '',
+            desc: '',
             address: '',
             city: '',
             state: '',
@@ -88,9 +109,31 @@ const CompanyForm = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log(values);
+
+        // if (!logoUrl) {
+        //     return toast.error('Please select the company logo');
+        // }
+
+        await createComapny({
+            ...values,
+            ownerId: User.name as string,
+            logo: logoUrl,
+        });
+
+        toast.success('Company Created');
+        form.reset();
+        router.push('/employer/company');
     };
+
+
+    console.log(User.name);
+
+
+    if (error) {
+        toast.error('Failed to save company');
+    }
 
     return (
         <>
@@ -129,53 +172,73 @@ const CompanyForm = () => {
                                 <FormField
                                     control={form.control}
                                     name='name'
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Name</FormLabel>
                                             <FormControl>
                                                 <Input placeholder='Comapany name' {...field} />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
+
+                            <div className='col-span-2'>
+                                <FormField
+                                    control={form.control}
+                                    name='url'
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Website URL</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder='Website URL' {...field} />
+                                            </FormControl>
+
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
                             <div className='col-span-2 md:col-span-1'>
                                 <FormField
                                     control={form.control}
                                     name='industry'
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Industry</FormLabel>
                                             <FormControl>
                                                 <Input placeholder='Industry' {...field} />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
+
                             <div className='col-span-2 md:col-span-1'>
                                 <FormField
                                     control={form.control}
                                     name='capacity'
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Capacity</FormLabel>
                                             <FormControl>
                                                 <Input placeholder='capacity' {...field} />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
+
                             <div className='col-span-2'>
                                 <FormField
                                     control={form.control}
-                                    name='description'
-                                    render={({ field }) => (
+                                    name='desc'
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Description</FormLabel>
                                             <FormControl>
@@ -185,76 +248,85 @@ const CompanyForm = () => {
                                                     {...field}
                                                 />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
+
                             <div className='col-span-2 md:col-span-1'>
                                 <FormField
                                     control={form.control}
                                     name='address'
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Address</FormLabel>
                                             <FormControl>
                                                 <Input placeholder='Address' {...field} />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
+
                             <div className='col-span-2 md:col-span-1'>
                                 <FormField
                                     control={form.control}
                                     name='city'
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>City</FormLabel>
                                             <FormControl>
                                                 <Input placeholder='City' {...field} />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
+
                             <div className='col-span-2 md:col-span-1'>
                                 <FormField
                                     control={form.control}
                                     name='state'
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>State | Province</FormLabel>
                                             <FormControl>
                                                 <Input placeholder='State | Province' {...field} />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
+
                             <div className='col-span-2 md:col-span-1'>
                                 <FormField
                                     control={form.control}
                                     name='zip'
-                                    render={({ field }) => (
+                                    render={({field}) => (
                                         <FormItem>
                                             <FormLabel>Zip Code</FormLabel>
                                             <FormControl>
                                                 <Input placeholder='Zip Code' {...field} />
                                             </FormControl>
-                                            <FormMessage />
+                                            <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
                         </div>
 
-                        <Button type='submit' className='mt-5'>
-                            Submit
-                        </Button>
+                        <div className='flex justify-end items-center gap-2 mt-5'>
+                            <Button type='button' variant='outline' asChild>
+                                <Link href='/employer/company'>Cancel</Link>
+                            </Button>
+                            <Button type='submit' disabled={isLoading}>
+                                Save
+                            </Button>
+                        </div>
                     </form>
                 </Form>
             </div>

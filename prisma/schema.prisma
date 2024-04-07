@@ -17,15 +17,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -43,16 +42,15 @@ model User {
   name           String?
   email          String?   @unique
   emailVerified  DateTime?
-  hashedPassword String?
   image          String?
-  profile        Profile?
-  role           Role      @default(USER)
-  companies      Company[]
   createdAt      DateTime  @default(now())
+  hashedPassword String?
   updatedAt      DateTime  @updatedAt
-
-  accounts Account[]
-  sessions Session[]
+  role           Role      @default(USER)
+  accounts       Account[]
+  companies      Company[]
+  profile        Profile?
+  sessions       Session[]
 }
 
 model VerificationToken {
@@ -66,36 +64,31 @@ model VerificationToken {
 model Profile {
   id        String   @id @default(cuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
   bio       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
-}
-
-enum Role {
-  USER
-  EMPLOYER
-  ADMIN
 }
 
 model Company {
   id        String   @id @default(cuid())
   name      String
   logo      String?
+  capacity  String?
   desc      String?
   industry  String?
-  capacity  String?
   address   String?
   city      String?
   state     String?
   zip       String?
   ownerId   String
-  owner     User     @relation(fields: [ownerId], references: [id])
-  jobs      Job[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  url       String?
+  owner     User     @relation(fields: [ownerId], references: [id])
+  jobs      Job[]
 
   @@index([ownerId])
 }
@@ -103,9 +96,9 @@ model Company {
 model Category {
   id        String   @id @default(cuid())
   name      String
-  jobs      Job[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  jobs      Job[]
 }
 
 model Job {
@@ -122,11 +115,17 @@ model Job {
   startDate   String?
   status      Boolean  @default(true)
   companyId   String
-  company     Company  @relation(fields: [companyId], references: [id])
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  category    Category @relation(fields: [categoryId], references: [id])
+  company     Company  @relation(fields: [companyId], references: [id])
 
   @@index([companyId, categoryId])
+}
+
+enum Role {
+  USER
+  EMPLOYER
+  ADMIN
 }

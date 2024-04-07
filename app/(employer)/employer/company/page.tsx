@@ -16,7 +16,6 @@ const EmployerCompanyPage = () => {
     // if (error) {
     //   toast.error('Something went wrong');
     // }
-
     return (
         <div className='p-5'>
             <Breadcrumb name='Company' />
