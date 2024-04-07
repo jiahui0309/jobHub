@@ -69,13 +69,13 @@ const CompanyForm = () => {
     const { selectedItem, onResetSelectetedItem } = useCompanyModal();
 
     const {
-        mutateAsync: createComapny,
+        mutateAsync: createCompany,
         isLoading,
         error,
     } = useCreateCompanyMutation();
 
     const {
-        mutateAsync: updateComapny,
+        mutateAsync: updateCompany,
         isLoading: isUpdateLoading,
         error: isUpdateError,
     } = useUpdateCompanyMutation();
@@ -131,21 +131,21 @@ const CompanyForm = () => {
         // }
 
         if (isEdit) {
-            await updateComapny({
+            await updateCompany({
                 ...values,
                 ownerId: session?.user?.name as string,
                 logo: logoUrl,
                 id: selectedItem?.id,
             });
         } else {
-            await createComapny({
+            await createCompany({
                 ...values,
                 ownerId: session?.user?.name as string,
                 logo: logoUrl,
             });
         }
 
-        toast.success('Company Created');
+        toast.success(selectedItem ? 'Company Updated' : 'Company Created');
         form.reset();
         router.push('/employer/company');
     };
