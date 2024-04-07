@@ -38,7 +38,7 @@ export const GET = async (
 
         return NextResponse.json(category);
     } catch (err) {
-        console.log(`Cat-Put Error: ${err}`);
+        console.log(`Cat-Delete Error: ${err}`);
         return new NextResponse('Internal Error', { status: 500 });
     }
 };

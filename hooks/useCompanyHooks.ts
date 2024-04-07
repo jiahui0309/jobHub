@@ -7,11 +7,18 @@ export const useCreateCompanyMutation = () =>
     useMutation({
         mutationFn: async (companyData: ICompany) =>
             (await axios.post('/api/company', companyData)).data,
-        onSuccess: () => queryClient.invalidateQueries(['all-com']),
+        onSuccess: () => queryClient.invalidateQueries(['all-companies']),
     });
 
 export const useGetAllCompanies = () =>
     useQuery({
-        queryKey: ['all-com'],
+        queryKey: ['all-companies'],
         queryFn: async () => (await axios.get('/api/company')).data,
+    });
+
+export const useDeleteCompanyMutation = () =>
+    useMutation({
+        mutationFn: async (companyId: string) =>
+            (await axios.delete(`/api/company/${companyId}`)).data,
+        onSuccess: () => queryClient.invalidateQueries(['all-companies']),
     });
