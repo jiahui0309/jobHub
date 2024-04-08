@@ -17,6 +17,11 @@ const EmployerCategoryPage = () => {
         name: cat.name,
     }));
 
+    if (isLoading) {
+        return <Loading />;
+    }
+
+
     if (error) {
         toast.error('Something went wrong');
     }

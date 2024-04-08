@@ -17,14 +17,6 @@ const EmployerCompanyPage = () => {
     // }
     const { data: companies, isLoading, error } = useGetAllCompaniesQuery();
 
-    // const convertedCompanies = companies?.map((com: ICompany) => ({
-    //     id: com.id,
-    //     name: com.name,
-    //     industry: com.industry,
-    //     address: com.address,
-    //     city: com.city,
-    // }));
-
 
     if (error) {
         toast.error('Something went wrong');
