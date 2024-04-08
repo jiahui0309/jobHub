@@ -10,6 +10,10 @@ export const GET = async (
             where: {
                 id: params.jobId,
             },
+            include: {
+                category: true,
+                company: true,
+            },
         });
 
         return NextResponse.json(job);
@@ -85,6 +89,24 @@ export const PATCH = async (
         return NextResponse.json(job, { status: 200 });
     } catch (err) {
         console.log(`Job-Patch Error: ${err}`);
+        return new NextResponse('Internal Error', { status: 500 });
+    }
+};
+
+export const DELETE = async (
+    request: Request,
+    { params }: { params: { jobId: string } }
+) => {
+    try {
+        await prisma.job.delete({
+            where: {
+                id: params.jobId,
+            },
+        });
+
+        return new NextResponse('Job Deleted');
+    } catch (err) {
+        console.log(`Job-Delete Error: ${err}`);
         return new NextResponse('Internal Error', { status: 500 });
     }
 };

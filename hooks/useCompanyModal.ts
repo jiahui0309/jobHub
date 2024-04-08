@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Company, ShortCompany } from '@/types/company';
+import { Company } from '@/types/company';
 
 
 interface useCompanyModalStore {
