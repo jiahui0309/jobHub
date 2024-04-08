@@ -24,6 +24,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
     useCreateCompanyMutation,
+    useGetAllCompanies,
     useUpdateCompanyMutation,
 } from '@/hooks/useCompanyHooks';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -46,6 +47,8 @@ import { CalendarIcon } from 'lucide-react';
 import { Job } from '@/types/job';
 import { useGetAllCategories } from '@/hooks/useCategoryHooks';
 import { Category } from '@/types/category';
+import { useCreateJobMutation } from '@/hooks/useJobHooks';
+import { Company } from '@/types/company';
 
 const formSchema = z.object({
     name: z.string().min(1, {
@@ -73,7 +76,7 @@ const formSchema = z.object({
         message: 'Schedule is required.',
     }),
     status: z.string().min(1, {
-        message: 'Please select a status.',
+        message: 'Status is required.',
     }),
     benefit: z.string().min(1, {
         message: 'Benefit is required.',
@@ -83,6 +86,9 @@ const formSchema = z.object({
     }),
     categoryId: z.string().min(1, {
         message: 'Please select a category.',
+    }),
+    companyId: z.string().min(1, {
+        message: 'Please select a company.',
     }),
 });
 
@@ -94,8 +100,34 @@ const JobForm = () => {
     const isEdit = searchParams.get('isEdit');
 
     const { data: categories } = useGetAllCategories();
+    const { data: companies } = useGetAllCompanies();
 
-    let selectedItem: Job = {};
+    const { mutateAsync: createJob } = useCreateJobMutation();
+
+    let selectedItem: Job = {
+        benefit: "",
+        description: "",
+        location: "",
+        name: "",
+        requirement: "",
+        salary: "",
+        schedule: "",
+        status: false,
+        type: "",
+        workType: ""
+    };
+
+    // const {
+    //   mutateAsync: createComapny,
+    //   isLoading,
+    //   error,
+    // } = useCreateCompanyMutation();
+
+    // const {
+    //   mutateAsync: updateComapny,
+    //   isLoading: isUpdateLoading,
+    //   error: isUpdateError,
+    // } = useUpdateCompanyMutation();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -110,41 +142,45 @@ const JobForm = () => {
             workType: isEdit ? selectedItem?.workType : '',
             benefit: isEdit ? selectedItem?.benefit : '',
             startDate: isEdit ? selectedItem?.startDate : new Date(),
-            status: isEdit ? selectedItem?.status : '',
+            status: 'true',
             categoryId: isEdit ? selectedItem?.categoryId : '',
+            companyId: isEdit ? selectedItem?.companyId : '',
         },
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log(values);
 
-        // if (isEdit) {
-        //   console.log('Edit');
-        // } else {
-        //   console.log('Create');
-        // }
+        if (isEdit) {
+            console.log('Edit');
+        } else {
+            await createJob({
+                ...values,
+                status: 'true' ? true : false,
+            });
+        }
 
-        // toast.success(selectedItem ? 'Job Updated' : 'Job Created');
-        // form.reset();
-        // router.push('/employer/job');
+        toast.success(isEdit ? 'Job Updated' : 'Job Created');
+        form.reset();
+        router.push('/employer/job');
     };
 
     // if (error) {
-    //     toast.error('Failed to save job');
+    //   toast.error('Failed to save job');
     // }
 
     return (
         <>
             <Heading
-                title={selectedItem ? 'Update job' : 'Create job'}
-                description={selectedItem ? 'Update a job' : 'Create a new job'}
+                title={isEdit ? 'Update job' : 'Create job'}
+                description={isEdit ? 'Update a job' : 'Create a new job'}
             />
 
             <div className='mt-5'>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                         <div className='grid grid-cols-2 gap-3'>
-                            <div className='col-span-2'>
+                            <div className='col-span-2 md:col-span-1'>
                                 <FormField
                                     control={form.control}
                                     name='name'
@@ -154,6 +190,36 @@ const JobForm = () => {
                                             <FormControl>
                                                 <Input placeholder='Job name' {...field} />
                                             </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
+                            <div className='col-span-2 md:col-span-1'>
+                                <FormField
+                                    control={form.control}
+                                    name='companyId'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Company</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder='Select a company' />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {companies?.map((comp: Company) => (
+                                                        <SelectItem value={comp.id!} key={comp.id}>
+                                                            {comp.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -368,8 +434,11 @@ const JobForm = () => {
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    <SelectItem value='active'>Active</SelectItem>
-                                                    <SelectItem value='inactive'>Inactive</SelectItem>
+                                                    {categories?.map((cat: Category) => (
+                                                        <SelectItem value={cat.id} key={cat.id}>
+                                                            {cat.name}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -395,11 +464,8 @@ const JobForm = () => {
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {categories?.map((cat: Category) => (
-                                                        <SelectItem value={cat.id} key={cat.id}>
-                                                            {cat.name}
-                                                        </SelectItem>
-                                                    ))}
+                                                    <SelectItem value='true'>Active</SelectItem>
+                                                    <SelectItem value='false'>Inactive</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -431,7 +497,7 @@ const JobForm = () => {
 
                         <div className='flex justify-end items-center gap-2 mt-5'>
                             <Button type='button' variant='outline' asChild>
-                            <Link href='/employer/job'>Cancel</Link>
+                                <Link href='/employer/job'>Cancel</Link>
                             </Button>
                             <Button type='submit'>Save</Button>
                         </div>

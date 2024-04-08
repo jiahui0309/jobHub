@@ -8,9 +8,10 @@ export type Job = {
     type: string;
     workType: string;
     schedule: string;
-    startDate: Date;
-    category: string;
-    status: string;
+    startDate?: Date;
+    status: boolean;
     benefit: string;
     categoryId?: string;
+    companyId?: string;
+
 };
