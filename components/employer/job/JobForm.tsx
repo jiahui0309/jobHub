@@ -24,7 +24,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
     useCreateCompanyMutation,
-    useGetAllCompanies,
+    useGetAllCompaniesQuery,
     useUpdateCompanyMutation,
 } from '@/hooks/useCompanyHooks';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -100,11 +100,12 @@ const JobForm = () => {
     const isEdit = searchParams.get('isEdit');
 
     const { data: categories } = useGetAllCategories();
-    const { data: companies } = useGetAllCompanies();
+    const { data: companies } = useGetAllCompaniesQuery();
 
     const { mutateAsync: createJob } = useCreateJobMutation();
 
     let selectedItem: Job = {
+        categoryId: "", companyId: "",
         benefit: "",
         description: "",
         location: "",

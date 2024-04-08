@@ -6,17 +6,16 @@ import { DataTable } from '@/components/employer/category/DataTable';
 import Breadcrumb from '@/components/shared/Breadcrumb';
 import Heading from '@/components/shared/Heading';
 import { Button } from '@/components/ui/button';
-import { useGetAllCompanies } from '@/hooks/useCompanyHooks';
+import { useGetAllCompaniesQuery } from '@/hooks/useCompanyHooks';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { HiPlus } from 'react-icons/hi';
-import {ICompany} from "@/types/company";
 
 const EmployerCompanyPage = () => {
     // if (error) {
     //   toast.error('Something went wrong');
     // }
-    const { data: companies, isLoading, error } = useGetAllCompanies();
+    const { data: companies, isLoading, error } = useGetAllCompaniesQuery();
 
     // const convertedCompanies = companies?.map((com: ICompany) => ({
     //     id: com.id,
