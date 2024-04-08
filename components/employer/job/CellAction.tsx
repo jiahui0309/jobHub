@@ -26,7 +26,7 @@ interface CellActionProps {
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
-    const { onDeleteOpen } = useJobModal();
+    const { onDeleteOpen, onEdit } = useJobModal();
 
     return (
         <div>
@@ -52,7 +52,8 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
                     <DropdownMenuItem>
                         <Link
-                            href={`/employer/job/${data.id}/edit/?isEdit=true`}
+                            onClick={() => onEdit(data)}
+                            href={`/employer/job/${data.id}/edit`}
                             className='flex items-center'
                         >
                             <HiOutlinePencilAlt className='mr-2 w-5 h-5' />

@@ -32,7 +32,6 @@ export const POST = async (request: Request) => {
             !startDate ||
             !categoryId ||
             !companyId ||
-            !status ||
             !benefit
         ) {
             return new NextResponse('Please enter all required fields.', {
@@ -72,6 +71,10 @@ export const GET = async (request: Request) => {
         const jobs = await prisma.job.findMany({
             orderBy: {
                 name: 'asc',
+            },
+            include: {
+                category: true,
+                company: true,
             },
         });
 
