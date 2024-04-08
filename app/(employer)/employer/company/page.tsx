@@ -1,8 +1,8 @@
 'use client'
 
 import Loading from '@/components/Loading';
-import { columns } from '@/components/employer/category/Columns';
-import { DataTable } from '@/components/employer/category/DataTable';
+import { columns } from '@/components/employer/company/Columns';
+import { DataTable } from '@/components/employer/company/DataTable';
 import Breadcrumb from '@/components/shared/Breadcrumb';
 import Heading from '@/components/shared/Heading';
 import { Button } from '@/components/ui/button';

@@ -25,7 +25,6 @@ export default function RootLayout({
       <ReactQueryProvider>
         <Provider>
           <ToasterContext />
-            <Navbar />
           {children}
         </Provider>
       </ReactQueryProvider>

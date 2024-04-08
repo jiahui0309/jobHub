@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent } from 'react';
+import {useState, ChangeEvent, useEffect} from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -22,7 +22,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import User from "@/components/User";
+
 import {
     useCreateCompanyMutation,
     useUpdateCompanyMutation,
@@ -131,16 +131,20 @@ const CompanyForm = () => {
         // }
 
         if (isEdit) {
+            {/* @ts-ignore */}
             await updateCompany({
                 ...values,
-                ownerId: session?.user?.name as string,
+                /* @ts-expect-error */
+                ownerId: session?.user?.id,
                 logo: logoUrl,
                 id: selectedItem?.id,
             });
         } else {
+            {/* @ts-ignore */}
             await createCompany({
                 ...values,
-                ownerId: session?.user?.name as string,
+                /* @ts-expect-error */
+                ownerId: session?.user?.id,
                 logo: logoUrl,
             });
         }
@@ -151,15 +155,9 @@ const CompanyForm = () => {
     };
 
 
-    console.log(User.name);
-
-
     if (error) {
         toast.error('Failed to save company');
     }
-
-    console.log('444', selectedItem);
-    console.log('555', isEdit);
 
     return (
         <>

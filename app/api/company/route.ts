@@ -26,8 +26,7 @@ export const POST = async (request: Request) => {
             !address ||
             !city ||
             !state ||
-            !zip ||
-            !logo
+            !zip
         ) {
             return new NextResponse('Please enter all required fields.', {
                 status: 400,

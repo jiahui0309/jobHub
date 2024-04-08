@@ -12,11 +12,3 @@ export type Company ={
     zip: string;
     ownerId: string;
 };
-
-// export interface ShortCompany {
-//     id: string;
-//     name: string;
-//     industry: string;
-//     address: string;
-//     city: string;
-// }
